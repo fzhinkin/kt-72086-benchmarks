@@ -2,32 +2,42 @@ package org.jetbrains.kotlin
 
 import kotlinx.benchmark.*
 import org.openjdk.jmh.annotations.Fork
-import java.util.concurrent.TimeUnit
+
+val emptySequence = sequence<Any> {
+}
+
+val infiniteSequence = sequence<Any> {
+    while (true) {
+        yield(Unit)
+    }
+}
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
 @Fork(3)
-@Warmup(iterations = 5, time = 3, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
-open class Sequences {
-    val emptySequence = sequence<Any> {
-    }
-
-    val infiniteSequence = sequence<Any> {
-        while (true) {
-            yield(Unit)
-        }
-    }
-
+@Warmup(iterations = 5, time = 3, timeUnit = BenchmarkTimeUnit.SECONDS)
+@Measurement(iterations = 5, time = 1, timeUnit = BenchmarkTimeUnit.SECONDS)
+open class SequencesHasNextBenchmark {
     @Benchmark
     fun emptyHasNext() = emptySequence.iterator().hasNext()
 
     @Benchmark
     fun infiniteHasNext() = infiniteSequence.iterator().hasNext()
+}
+
+@State(Scope.Benchmark)
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
+@Fork(3)
+@Warmup(iterations = 5, time = 3, timeUnit = BenchmarkTimeUnit.SECONDS)
+@Measurement(iterations = 5, time = 1, timeUnit = BenchmarkTimeUnit.SECONDS)
+open class SequencesConsumeBenchmark {
+    @Param("1", "10", "100", "1000")
+    var consumeItems: Int = 0
 
     @Benchmark
     fun consumeInfinite(blackhole: Blackhole) {
-        infiniteSequence.take(10).forEach { blackhole.consume(it) }
+        infiniteSequence.take(consumeItems).forEach { blackhole.consume(it) }
     }
 }

@@ -8,13 +8,13 @@ kotlin {
 
     val main = target.compilations.getByName("main")
     val serviceLoader = target.compilations.create("serviceLoader")
-    val serviceLoaderOpt = target.compilations.create("serviceLoaderOpt")
+    val android = target.compilations.create("android")
     val singleService = target.compilations.create("singleService")
 
 
     main.defaultSourceSet.kotlin.srcDir("src/main/kotlin")
     serviceLoader.defaultSourceSet.kotlin.srcDir("src/main/kotlin")
-    serviceLoaderOpt.defaultSourceSet.kotlin.srcDir("src/main/kotlin")
+    android.defaultSourceSet.kotlin.srcDir("src/main/kotlin")
     singleService.defaultSourceSet.kotlin.srcDir("src/main/kotlin")
 }
 
@@ -30,7 +30,7 @@ dependencies {
     for (dep in commonDeps) {
         implementation(dep)
         "serviceLoaderImplementation"(dep)
-        "serviceLoaderOptImplementation"(dep)
+        "androidImplementation"(dep)
         "singleServiceImplementation"(dep)
     }
 
@@ -40,18 +40,18 @@ dependencies {
     "serviceLoaderImplementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.11.0-dpspi")
     "serviceLoaderImplementation"("org.jetbrains.kotlin:kotlin-stdlib:2.4.255-SNAPSHOT")
 
-    "serviceLoaderOptImplementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.11.0-dpspi")
-    "serviceLoaderOptImplementation"("org.jetbrains.kotlin:kotlin-stdlib:2.4.255-c1-SNAPSHOT")
-
     "singleServiceImplementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.11.0-dpspi")
     "singleServiceImplementation"("org.jetbrains.kotlin:kotlin-stdlib:2.4.255-s-SNAPSHOT")
+
+    "androidImplementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.11.0-dpspi")
+    "androidImplementation"("org.jetbrains.kotlin:kotlin-stdlib:2.4.255-na-SNAPSHOT")
 }
 
 benchmark {
     targets {
         create("main")
         create("serviceLoader")
-        create("serviceLoaderOpt")
         create("singleService")
+        create("android")
     }
 }
